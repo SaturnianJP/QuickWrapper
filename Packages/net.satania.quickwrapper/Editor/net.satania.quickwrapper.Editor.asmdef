@@ -1,0 +1,14 @@
+{
+  "name": "net.satania.quickwrapper.Editor",
+  "references": [
+    "net.satania.quickwrapper"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "defineConstraints": [],
+  "optionalUnityReferences": []
+}
