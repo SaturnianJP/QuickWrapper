@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEditor;
@@ -19,6 +18,9 @@ namespace Satania.QuickWrapper
 
         public void Export()
         {
+            if (assetsToExport.Count < 1)
+                return;
+
             if (string.IsNullOrEmpty(packageFilepath))
                 throw new System.Exception($"{name}内のファイルパスが不正です。");
 

@@ -1,7 +1,7 @@
 {
   "name": "net.satania.quickwrapper",
   "displayName": "QuickWrapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Describe this Package",
   "gitDependencies": {},
   "vpmDependencies": {},
@@ -11,5 +11,6 @@
   },
   "legacyFolders": {},
   "legacyFiles": {},
-  "localPath": ""
+  "localPath": "",
+  "unity": "2022.3"
 }
