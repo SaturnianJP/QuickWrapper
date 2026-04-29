@@ -3,7 +3,7 @@
 VRChat Package Manager (VPM) listing repository for **QuickWrapper** (`net.satania.quickwrapper`), hosted via GitHub Pages.
 
 [![Open Listing Page](https://img.shields.io/badge/-Open%20Listing%20Page-2ea44f?style=for-the-badge&logo=github)](https://saturnianjp.github.io/QuickWrapper/)
-[![Add to VCC](https://img.shields.io/badge/-Add%20to%20VCC-blue?style=for-the-badge&logo=vrchat)](https://saturnianjp.github.io/QuickWrapper/index.json)
+[![Add to VCC](https://img.shields.io/badge/-Add%20to%20VCC-blue?style=for-the-badge&logo=vrchat)](vcc://vpm/addRepo?url=https%3A%2F%2Fsaturnianjp.github.io%2FQuickWrapper%2Findex.json)
 
 Built from [satania-vpm-template](https://github.com/SaturnianJP/satania-vpm-template) (Private Repository) by **Satania** and **Claude**.
 
