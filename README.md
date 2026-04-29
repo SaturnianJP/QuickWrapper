@@ -2,6 +2,9 @@
 
 VRChat Package Manager (VPM) listing repository for **QuickWrapper** (`net.satania.quickwrapper`), hosted via GitHub Pages.
 
+[![Open Listing Page](https://img.shields.io/badge/-Open%20Listing%20Page-2ea44f?style=for-the-badge&logo=github)](https://saturnianjp.github.io/QuickWrapper/)
+[![Add to VCC](https://img.shields.io/badge/-Add%20to%20VCC-blue?style=for-the-badge&logo=vrchat)](https://saturnianjp.github.io/QuickWrapper/index.json)
+
 Built from [satania-vpm-template](https://github.com/SaturnianJP/satania-vpm-template) (Private Repository) by **Satania** and **Claude**.
 
 ## QuickWrapper とは
@@ -28,13 +31,13 @@ Built from [satania-vpm-template](https://github.com/SaturnianJP/satania-vpm-tem
 
 ## Adding the listing to VCC
 
-After GitHub Pages publishes, your listing URL is:
+リスティング URL:
 
 ```
-https://<your-username>.github.io/QuickWrapper/index.json
+https://saturnianjp.github.io/QuickWrapper/index.json
 ```
 
-Open it in your browser and click **Add to VCC**, or paste the URL into VCC manually.
+ランディングページ（[https://saturnianjp.github.io/QuickWrapper/](https://saturnianjp.github.io/QuickWrapper/)）の **Add to VCC** ボタンから追加するか、上記 URL を VCC に直接貼り付けてください。
 
 ## License
 
