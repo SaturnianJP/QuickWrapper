@@ -1,4 +1,4 @@
-import { baseLayerLuminance, StandardLuminance } from 'https://unpkg.com/@fluentui/web-components';
+import { baseLayerLuminance, StandardLuminance } from 'https://unpkg.com/@fluentui/web-components@2.6.1';
 
 const LISTING_URL = "{{ listingInfo.Url }}";
 
@@ -345,10 +345,14 @@ const applyI18n = (lang) => {
 
       packageInfoModal.hidden = false;
 
-      setTimeout(() => {
-        const height = packageInfoModal.querySelector('.col').clientHeight;
-        modalControl.style.setProperty('--dialog-height', `${height + 14}px`);
-      }, 1);
+      // Fluent reflects `hidden` to the DOM attribute on the next animation frame,
+      // so measuring in a 1ms timeout reads 0 while the dialog is still display:none.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const height = packageInfoModal.querySelector('.col').clientHeight;
+          modalControl.style.setProperty('--dialog-height', `${height + 14}px`);
+        });
+      });
     });
   });
 

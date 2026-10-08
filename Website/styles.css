@@ -740,6 +740,19 @@ fluent-data-grid-row:not([row-type="header"]):hover {
   z-index: 10;
 }
 
+/* Fluent's dialog control is a fixed 640x480px box by default. That clips the
+   (longer) translated help text and overflows narrow screens, so size the help
+   dialog to its content and keep every dialog inside the viewport. */
+#addListingToVccHelp::part(control) {
+  height: auto;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+fluent-dialog::part(control) {
+  max-width: calc(100vw - 2rem);
+}
+
 #rowMoreMenu {
   top: 0;
   left: 0;
@@ -818,8 +831,29 @@ a {
     min-width: 90px;
   }
 
-  .vccUrlField {
-    min-width: 200px;
+  /* The Add-to-VCC block stacks vertically here, so the field must drop its
+     horizontal flex-basis (200px) or it becomes a 200px-tall box. */
+  .addToVccBlock .vccUrlField {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  /* Dialog URL rows: the field takes the whole line, buttons wrap below it. */
+  fluent-dialog .row:has(.vccUrlField) {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  fluent-dialog .vccUrlField {
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  fluent-dialog .row:has(.vccUrlField) .ms-2 {
+    margin-left: 0;
   }
 
   .addToVccBlock {
