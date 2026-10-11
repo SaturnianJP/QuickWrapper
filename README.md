@@ -16,7 +16,9 @@ Built from [satania-vpm-template](https://github.com/SaturnianJP/satania-vpm-tem
   - エクスポートしたいアセットをリストで保持する ScriptableObject。
   - 依存関係 (`Include Dependencies`) / Library アセット (`Include Library Assets`) の同梱有無をトグルで切り替え可能。
   - 出力先パスを指定して、Inspector の **Export Package** ボタン一発で `.unitypackage` を書き出し。
-  - パスの「参照」ボタンからファイルダイアログで保存先を指定可能。
+  - 出力先は絶対パスのほか、プロジェクトルート (`Assets` の親フォルダ) 基準の相対パス (例: `Builds/MyPackage.unitypackage`) も指定可能。Inspector に解決後の絶対パスが表示される。
+  - パスの「参照」ボタンからファイルダイアログで保存先を指定可能。プロジェクト内を選んだ場合は相対パスで保存される。
+  - **フォルダが無ければ作成** トグルをオンにすると、出力先フォルダが無い場合にエクスポート時に自動作成される (オフの場合はエラーで中断)。
 - **Batch** (`Assets/Create/Quick Wrapper/Batcher`)
   - 複数の Manifest をまとめて持てる ScriptableObject。
   - **Export All** ボタンで一括エクスポート。失敗したマニフェストはダイアログで報告されるため、原因切り分けが容易。

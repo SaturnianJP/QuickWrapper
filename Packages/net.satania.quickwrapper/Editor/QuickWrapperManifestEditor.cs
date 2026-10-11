@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.IO;
 using UnityEngine;
 using UnityEditor;
-using System.Linq;
 using UnityEditor.ProjectWindowCallback;
 
 namespace Satania.QuickWrapper
@@ -14,6 +12,12 @@ namespace Satania.QuickWrapper
         private SerializedProperty assetsToExport;
         private SerializedProperty includeDependecies, includeLibrary;
         private SerializedProperty packageFilepath;
+        private SerializedProperty createDirectory;
+
+        private static GUIStyle resolvedPathStyle;
+
+        private static readonly GUIContent browseContent = new GUIContent("参照", "保存先を選択します。プロジェクト内を選んだ場合はプロジェクト相対パスで保存されます。");
+        private static readonly GUIContent createDirectoryContent = new GUIContent("フォルダが無ければ作成", "エクスポート先のフォルダが存在しない場合、エクスポート時に自動で作成します。");
 
         private void OnEnable()
         {
@@ -21,6 +25,7 @@ namespace Satania.QuickWrapper
             includeLibrary = serializedObject.FindProperty("includeLibrary");
             assetsToExport = serializedObject.FindProperty("assetsToExport");
             packageFilepath = serializedObject.FindProperty("packageFilepath");
+            createDirectory = serializedObject.FindProperty("createDirectory");
         }
 
         public override void OnInspectorGUI()
@@ -39,29 +44,101 @@ namespace Satania.QuickWrapper
 
             using (new GUILayout.HorizontalScope())
             {
-                packageFilepath.stringValue = EditorGUILayout.TextField(manifest.packageFilepath);
+                EditorGUI.BeginChangeCheck();
+                string path = EditorGUILayout.TextField(packageFilepath.stringValue);
+                if (EditorGUI.EndChangeCheck())
+                    packageFilepath.stringValue = path;
 
-                if (GUILayout.Button("参照", GUILayout.Width(40)))
+                if (GUILayout.Button(browseContent, GUILayout.Width(40)))
                 {
-                    EditorApplication.delayCall += () =>
-                    {
-                        string path = EditorUtility.SaveFilePanel("Select path for export", manifest.packageFilepath, manifest.name, "unitypackage");
-                        if (!string.IsNullOrEmpty(path))
-                        {
-                            Undo.RecordObject(manifest, "Set Filepath");
-                            manifest.SetFilepath(path);
-                        }
-                    };
+                    EditorApplication.delayCall += BrowseFilepath;
                 }
             }
 
+            DrawResolvedPath();
+
+            EditorGUILayout.PropertyField(createDirectory, createDirectoryContent);
+
+            EditorGUILayout.Space(5);
+
             if (GUILayout.Button("Export Package", GUILayout.Height(40)))
             {
+                serializedObject.ApplyModifiedProperties();
                 manifest.Export();
             }
 
-
             serializedObject.ApplyModifiedProperties();
+        }
+
+        /// <summary>入力されたパスがどこに解決されるかと、フォルダの有無を表示する。</summary>
+        private void DrawResolvedPath()
+        {
+            string raw = packageFilepath.stringValue;
+            string resolved;
+
+            try
+            {
+                resolved = QuickWrapperManifest.ResolveFilepath(raw);
+            }
+            catch (System.Exception ex)
+            {
+                EditorGUILayout.HelpBox($"パスが不正です: {ex.Message}", MessageType.Error);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(resolved))
+            {
+                EditorGUILayout.HelpBox("エクスポート先が未設定です。絶対パス、またはプロジェクトルート (Assets の親フォルダ) 基準の相対パスを指定してください。", MessageType.Warning);
+                return;
+            }
+
+            if (resolvedPathStyle == null)
+                resolvedPathStyle = new GUIStyle(EditorStyles.miniLabel) { wordWrap = true };
+
+            string kind = QuickWrapperManifest.IsRelative(raw) ? "プロジェクト相対" : "絶対パス";
+            EditorGUILayout.LabelField($"{kind} → {resolved}", resolvedPathStyle);
+
+            string directory = Path.GetDirectoryName(resolved);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                if (createDirectory.boolValue)
+                    EditorGUILayout.HelpBox("フォルダが存在しないため、エクスポート時に作成されます。", MessageType.Info);
+                else
+                    EditorGUILayout.HelpBox("エクスポート先のフォルダが存在しません。「フォルダが無ければ作成」をオンにするか、先にフォルダを作成してください。", MessageType.Warning);
+            }
+        }
+
+        private void BrowseFilepath()
+        {
+            string directory = QuickWrapperManifest.ProjectRoot;
+            string defaultName = manifest.name;
+
+            try
+            {
+                string current = manifest.GetResolvedFilepath();
+                if (!string.IsNullOrEmpty(current))
+                {
+                    string currentDirectory = Path.GetDirectoryName(current);
+                    if (!string.IsNullOrEmpty(currentDirectory) && Directory.Exists(currentDirectory))
+                        directory = currentDirectory;
+
+                    string currentName = Path.GetFileNameWithoutExtension(current);
+                    if (!string.IsNullOrEmpty(currentName))
+                        defaultName = currentName;
+                }
+            }
+            catch (System.Exception)
+            {
+                // 現在のパスが不正でも参照ダイアログは開けるようにする
+            }
+
+            string path = EditorUtility.SaveFilePanel("Select path for export", directory, defaultName, "unitypackage");
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            Undo.RecordObject(manifest, "Set Filepath");
+            manifest.SetFilepath(QuickWrapperManifest.ToProjectRelativePath(path));
+            EditorUtility.SetDirty(manifest);
         }
     }
 
